@@ -13,6 +13,9 @@ export interface User {
 	id: number;
 	username: string;
 	email: string;
+	displayName: string,
+	photoURL: string,
+	uid:string,
 	provider: string;
 	confirmed: boolean;
 	blocked: boolean;

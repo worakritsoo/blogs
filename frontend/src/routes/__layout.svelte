@@ -1,42 +1,52 @@
-<!-- src/routes/__layout.svelte -->
-<script lang="ts">
-  import "../app.postcss";
-  import userStore from "$lib/user";
-  import type { User } from "$lib/types";
-  import { onMount } from "svelte";
-  import user from "$lib/user";
-  import { API } from "$lib/Env";
-  import { token } from "$lib/postStore";
+<script lang="ts" context="module">
+  import type { Load } from '@sveltejs/kit';
 
+  export const load: Load = async ({ fetch }) => {
+    const res = await fetch('/posts');
+    const data = await res.json();
+
+    return { props: { posts: data } };
+  };
+</script>
+
+<script>
+  import '../app.postcss';
+  import { onMount } from 'svelte';
+  import { jwt, user } from '$lib/user';
+  import { API } from '$lib/Env';
+  import { token } from '$lib/postStore';
+  import Login from '$lib/components/Login.svelte';
+  import Searchbox from '$lib/components/Searchbox.svelte';
+  export let posts = [];
   let loading = true;
 
   onMount(async () => {
     // Check if 'token' exists in localStorage
-    if (!localStorage.getItem("token")) {
+    if (!localStorage.getItem('token')) {
       loading = false;
       return { props: { user: null } };
     }
 
     // Fetch the user from strapi
-    const res = await fetch(`${API}/auth/me`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    const res = await fetch(API + '/auth/me', {
+      headers: { Authorization: 'Bearer ' + $jwt },
     });
-    const user: User = await res.json();
     loading = false;
     if (res.ok) {
-      $userStore = user;
+      $user = await res.json();
     }
   });
 
   async function logout() {
-    $user = "";
-    $token = "";
+    $user = null;
   }
 </script>
 
 <nav class="bg-white border-b border-gray-500 py-6 px-4 w-full">
   <div class="flex items-center justify-between container mx-auto">
     <a href="/" class="font-bold no-underline">P B O X</a>
+    <Searchbox {posts} />
+
     <section>
       {#if !$user}
         <a href="/login" class="font-mono no-underline">Login</a>
@@ -49,6 +59,10 @@
     </section>
   </div>
 </nav>
-{#if !loading}
-  <slot />
+{#if $user}
+  {#if !loading}
+    <slot />
+  {/if}
+{:else}
+  <Login />
 {/if}

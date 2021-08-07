@@ -1,7 +1,7 @@
 <!-- src/routes/blog/[slug].svelte -->
 <script lang="ts" context="module">
-  import type { Load } from "@sveltejs/kit";
-  import { API } from "$lib/Env";
+  import type { Load } from '@sveltejs/kit';
+  import { API } from '$lib/Env';
 
   export const load: Load = async ({ page: { params }, fetch }) => {
     // The params object will contain all of the parameters in the route.
@@ -24,10 +24,10 @@
 </script>
 
 <script lang="ts">
-  import type { Post } from "$lib/types";
-  import { onMount } from "svelte";
-  import { goto } from "$app/navigation";
-  import user from "$lib/user";
+  import type { Post } from '$lib/types';
+  import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+  import { user } from '$lib/user';
 
   export let post: Post;
   let content = post.content;
@@ -38,22 +38,22 @@
 
     // We're using this style of importing because "marked" uses require, which won't work when we import it with SvelteKit.
     // Check the "How do I use a client-side only library" in the FAQ: https://kit.svelte.dev/faq
-    const marked = (await import("marked")).default;
+    const marked = (await import('marked')).default;
     content = marked(post.content);
   });
 
   async function deletePost() {
-    if (!localStorage.getItem("token")) {
-      goto("/login");
+    if (!localStorage.getItem('token')) {
+      goto('/login');
       return;
     }
 
     const res = await fetch(`${API}/posts/` + post.id, {
-      method: "DELETE",
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      method: 'DELETE',
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
     });
     if (res.ok) {
-      goto("/");
+      goto('/');
     } else {
       const data: { message: { messages: { message: string }[] }[] } =
         await res.json();
@@ -67,8 +67,7 @@
 <svelte:head>
   <link
     rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/@tailwindcss/typography@0.4.x/dist/typography.min.css"
-  />
+    href="https://cdn.jsdelivr.net/npm/@tailwindcss/typography@0.4.x/dist/typography.min.css" />
 </svelte:head>
 <h1 class="text-center text-4xl mt-4">{post.title}</h1>
 <p class="text-center mt-2">By: {post.author.username}</p>
@@ -77,12 +76,10 @@
   <p class="my-2 flex justify-center items-center gap-3">
     <button
       class="bg-blue-500 text-white font-bold py-2 px-4 rounded border-transparent"
-      on:click={() => goto("/blog/new?edit=" + post.id)}>Update post</button
-    >
+      on:click={() => goto('/blog/new?edit=' + post.id)}>Update post</button>
     <button
       class="bg-red-500 text-white font-bold py-2 px-4 rounded border-transparent"
-      on:click={deletePost}>Delete post</button
-    >
+      on:click={deletePost}>Delete post</button>
   </p>
 {/if}
 

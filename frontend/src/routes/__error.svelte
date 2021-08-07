@@ -1,8 +1,8 @@
 <!-- src/routes/__error.svelte -->
 <script lang="ts" context="module">
-  import type { ErrorLoad } from "@sveltejs/kit";
+  import type { ErrorLoad } from '@sveltejs/kit';
 
-  export type { ErrorLoad } from "@sveltejs/kit";
+  export type { ErrorLoad } from '@sveltejs/kit';
 
   export const load: ErrorLoad = ({ error, status }) => {
     return { props: { error, status } };

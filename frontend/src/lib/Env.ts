@@ -1,4 +1,6 @@
-export const API = import.meta.env.VITE_API;
+import { dev } from "$app/env";
 
 
-export const PORT = import.meta.env.VITE_PORT || 3000;
+
+
+export const API = dev ? "http://localhost:1337" : import.meta.env.VITE_API;

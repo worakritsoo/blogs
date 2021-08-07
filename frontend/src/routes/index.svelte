@@ -1,9 +1,9 @@
 <!-- src/routes/index.svelte -->
 <script lang="ts" context="module">
-  import type { Load } from "@sveltejs/kit";
+  import type { Load } from '@sveltejs/kit';
 
   export const load: Load = async ({ fetch }) => {
-    const res = await fetch("/posts");
+    const res = await fetch('/posts');
     const data = await res.json();
 
     return { props: { posts: data } };
@@ -11,13 +11,15 @@
 </script>
 
 <script lang="ts">
-  import type { Post } from "$lib/types";
-  import { goto } from "$app/navigation";
+  import Searchbox from '../lib/components/Searchbox.svelte';
+
+  import type { Post } from '$lib/types';
+  import { goto } from '$app/navigation';
   export let posts: Post[];
-  let q = "";
-  import Fuse from "fuse.js";
-  import { postStore } from "$lib/postStore";
-  const fuse = new Fuse(posts, { keys: ["title", "content"] });
+  let q = '';
+  import Fuse from 'fuse.js';
+  import { postStore } from '$lib/postStore';
+  const fuse = new Fuse(posts, { keys: ['title', 'content'] });
   $: $postStore = q ? fuse.search(q).map((x) => x.item) : posts;
   let style = true;
 </script>
@@ -25,17 +27,8 @@
 <div class="my-4">
   <h1 class="text-center text-3xl font-bold">
     PBOX
-
-    <button on:click={() => (style = !style)}>{style ? "🟣" : "⚪"}</button>
+    <button on:click={() => (style = !style)}>{style ? '🟣' : '⚪'}</button>
   </h1>
-</div>
-<div class="grid place-items-center">
-  <input
-    type="text"
-    placeholder="Search"
-    bind:value={q}
-    class="items-center text-3xl font-bold outline-none"
-  />
 </div>
 
 <div class="container mx-auto mt-4">
@@ -51,11 +44,9 @@
     {:else}
       <a
         href={post.url}
-        class="hover:bg-indigo-500 hover:border-transparent hover:shadow-lg group block rounded-lg p-4 border border-gray-200 my-4"
-      >
+        class="hover:bg-indigo-500 hover:border-transparent hover:shadow-lg group block rounded-lg p-4 border border-gray-200 my-4">
         <dl
-          class="grid sm:block lg:grid xl:block grid-cols-2 grid-rows-2 items-center"
-        >
+          class="grid sm:block lg:grid xl:block grid-cols-2 grid-rows-2 items-center">
           <div>
             <dt class="sr-only">Title</dt>
             <dd class="group-hover:text-white leading-6 font-medium text-black">
@@ -65,8 +56,7 @@
           <div>
             <dt class="sr-only">Category</dt>
             <dd
-              class="group-hover:text-indigo-200 text-sm font-medium sm:mb-4 lg:mb-0 xl:mb-4"
-            >
+              class="group-hover:text-indigo-200 text-sm font-medium sm:mb-4 lg:mb-0 xl:mb-4">
               {post.url}
             </dd>
           </div>
